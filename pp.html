@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Placeholder Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+    .placeholder-container {
+      text-align: center;
+    }
+    .placeholder-container h1 {
+      font-size: 3rem;
+      color: #4CAF50;
+    }
+    .placeholder-container p {
+      font-size: 1.5rem;
+      margin: 10px 0;
+      color: #666;
+    }
+    .spinner {
+      margin: 20px auto;
+      border: 6px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 6px solid #4CAF50;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="placeholder-container">
+    <h1>Page is Under Construction</h1>
+    <p>We’re working hard to make this page available soon.</p>
+    <div class="spinner"></div>
+    <p>Please check back later!</p>
+  </div>
+
+</body>
+</html>
