@@ -7,6 +7,8 @@ import {
 } from "@mui/icons-material";
 
 const OrderTrack = ({ status }) => {
+  
+  console.log(status)
   const statusSteps = [
     { label: "Order Placed", icon: <Home className="text-gray-500" /> },
     { label: "Processing", icon: <AccessTime className="text-yellow-500" /> },

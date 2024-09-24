@@ -3,6 +3,26 @@ import OrderTrack from "./OrderTrack";
 import convertDate from "../../utils/convertTime";
 
 
+const formatDateTime = (createdAt) => {
+  if (!createdAt) return "N/A"; // Handle invalid or null dates
+
+  const date = createdAt.toDate(); // Assuming it's a Firestore Timestamp
+  
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Month in full form
+  const datePart = new Intl.DateTimeFormat('en-US', options).format(date);
+  
+  const timePart = new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }).format(date);
+
+  return `${datePart} at ${timePart}`;
+};
+
+
+
 
 const OrderItem = ({
     order,
@@ -12,6 +32,10 @@ const OrderItem = ({
     const [openCart, setOpenCart] = useState(null);
   
     function toggleCart() {
+
+      if(order?.paymentInfo?.status == "failed"){
+        return
+      }
       if (openCart == null && openOrderId == null) {
         setOpenCart(order.id);
         setOpenOrderId(order.id);
@@ -24,17 +48,19 @@ const OrderItem = ({
       setOpenCart(order.id);
       setOpenOrderId(order.id);
     }
+
+
     return (
       <div
         onClick={toggleCart}
-        className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md w-full cursor-pointer"
+        className={`bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md w-full cursor-pointer ${order?.paymentInfo?.status == "failed" && "bg-red-500"}`}
       >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">Order #:: {order.id}</h3>
           <p className="text-base font-semibold">Amount : ₹{order.totalAmount}</p>
         </div>
         <p className="text-sm">
-          Date: {convertDate(order.createdAt)}
+        Date: {order.createdAt ? formatDateTime(order.createdAt) : "N/A"}
         </p>
         <div className="">
           {openCart && openOrderId && openCart == openOrderId && (
@@ -90,7 +116,7 @@ const OrderItem = ({
             !trackMode && "hidden"
           }`}
         >
-          <OrderTrack status={cartItem.status} />
+          <OrderTrack status={cartItem.tracking} />
         </div>
       </div>
     );

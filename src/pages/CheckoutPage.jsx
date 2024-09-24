@@ -11,6 +11,7 @@ import { getUserDetails, updateUserProfile } from "../reducers/user/userAPI";
 import { USER_ACTIONS } from "../reducers/user/userReducer";
 import { CART_ACTIONS } from "../reducers/cart/cartReducer";
 import { clearUserCart, removeFromCart } from "../reducers/cart/CartAPI";
+import CustomRadioButton from "../components/templates/CustomRadioButton";
 
 const CheckoutPage = () => {
   const {
@@ -109,6 +110,7 @@ const CheckoutPage = () => {
         totalAmount,
         userAddressData
       );
+      console.log("payment result", paymentResult);
       await handleOrderCompletion(paymentResult, orderId, orderData);
     } catch (error) {
       handleError("Error placing order.");
@@ -169,18 +171,29 @@ const CheckoutPage = () => {
 
   const handleCashOnPayment = async (orderData) => {
     const codOrder = { ...orderData, paymentInfo: { status: "pending" } };
-    const { success, orderId } = await placeOrder(codOrder);
+    const { success, orderId, error } = await placeOrder(codOrder);
     if (!success) {
       handleError("Error placing order.");
       return;
     }
-    const updatedOrder = { ...codOrder, id: orderId };
-    dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: updatedOrder });
-    setloading(false);
-    toast.success("Order Placed successfully with Cash On Delivery");
-    navigate(`/order-success/${orderId}`);
+    if (success) {
+      // Perform cart operations here
+      if (!id) {
+        await clearUserCart(userData.id);
+        dispatch({ type: CART_ACTIONS.SET_CART, payload: [] });
+      } else {
+        await removeFromCart(userData.id, id);
+        const updatedCart = cart.filter((item) => item.pId !== id);
+        dispatch({ type: CART_ACTIONS.UPDATE_CART, payload: updatedCart });
+      }
+      const updatedOrder = { ...codOrder, id: orderId };
+      dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: updatedOrder });
+      setloading(false);
+      toast.success("Order Placed successfully with Cash On Delivery");
+      navigate(`/order-success/${orderId}`);
+      return;
+    }
   };
-
   const handleOrderCompletion = async (paymentResult, orderId, orderData) => {
     if (paymentResult.success) {
       const updatedOrder = {
@@ -189,32 +202,50 @@ const CheckoutPage = () => {
         paymentInfo: paymentResult.paymentInfo,
       };
 
-      const { success } = await updateOrder(orderId, updatedOrder);
+      const { success, message, error } = await updateOrder(
+        orderId,
+        updatedOrder
+      );
       if (success) {
         dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: updatedOrder });
-        // clearing cart when came from cart page
+
+        // Perform cart operations here
         if (!id) {
-          await clearUserCart();
+          await clearUserCart(userData.id);
           dispatch({ type: CART_ACTIONS.SET_CART, payload: [] });
-        }
-        // remove from cart when came from product-detail page
-        if (id) {
-          await removeFromCart(userData.id, pId);
-          const updatedCart = cart.filter(item => item.pId != id);
+        } else {
+          await removeFromCart(userData.id, id);
+          const updatedCart = cart.filter((item) => item.pId !== id);
           dispatch({ type: CART_ACTIONS.UPDATE_CART, payload: updatedCart });
         }
+
         setloading(false);
         toast.success("Order successfully placed");
         navigate(`/order-success/${orderId}`);
       } else {
-        toast.error("Error updating order.");
+        toast.error("Error updating order." + (message || error));
       }
     } else {
+      // coming from product page 
+      if (id) {
+        await removeFromCart(userData.id, id);
+        const updatedCart = cart.filter((item) => item.pId !== id);
+        dispatch({ type: CART_ACTIONS.UPDATE_CART, payload: updatedCart });
+      }
+      // Handle payment failure
       const failedOrder = { ...orderData, paymentInfo: { status: "failed" } };
-      await updateOrder(orderId, failedOrder);
-      dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: failedOrder });
+      const { success, message, error } = await updateOrder(
+        orderId,
+        failedOrder
+      );
+      if (success) {
+        dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: failedOrder });
+      }
+      if (!success) {
+        handleError(message || error);
+      }
       setloading(false);
-      navigate(-1);
+      navigate("/");
     }
   };
 
@@ -322,33 +353,5 @@ const PaymentOptions = ({
         setSelectedOption={setSelectedPaymentOption}
       />
     ))}
-  </div>
-);
-
-// CustomRadioButton Component
-const CustomRadioButton = ({
-  label,
-  value,
-  selectedOption,
-  setSelectedOption,
-}) => (
-  <div className="flex items-center gap-2">
-    <input
-      name={value}
-      type="radio"
-      id={value}
-      className="hidden"
-      value={value}
-      checked={selectedOption === value}
-      onChange={() => setSelectedOption(value)}
-    />
-    <label htmlFor={value} className="flex items-center cursor-pointer">
-      <span className="w-4 h-4 border-2 rounded-full flex-shrink-0 border-gray-800 flex justify-center items-center transition duration-200">
-        {selectedOption === value && (
-          <span className="w-2 h-2 bg-gray-800 rounded-full"></span>
-        )}
-      </span>
-      <span className="ml-2 text-base text-gray-700">{label}</span>
-    </label>
   </div>
 );

@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+backend_razorpay
+backend_razorpay/
+justforadd
+justforadd/

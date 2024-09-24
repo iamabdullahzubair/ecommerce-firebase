@@ -1,6 +1,9 @@
 import { auth } from "../../firebase";
 import OrderService from "../../firebaseServices/orderService";
 
+
+
+
 export async function placeOrder(orderPayload) {
   const user = auth.currentUser; // Directly get the current user
 
@@ -145,10 +148,11 @@ export async function getUserOrders() {
 }
 
 
+const razorpay_api = import.meta.env.VITE_RAZORPAY_API
 
 export async function getPaymentDetail(paymentId) {
   try {
-    const response = await fetch(`http://localhost:5000/api/payment/fetch-payment-details/${paymentId}`)
+    const response = await fetch(`${razorpay_api}/api/payment/fetch-payment-details/${paymentId}`)
     const data = await response.json();
     if(response.ok){
       return {success : true, data}

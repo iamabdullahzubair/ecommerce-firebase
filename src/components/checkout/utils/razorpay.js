@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
 
-const logo = "https://firebasestorage.googleapis.com/v0/b/ecommerce-firebase-1d466.appspot.com/o/company%2Flogo%2Fexclusive-white.png?alt=media&token=47c2197c-3c0e-494a-bbd6-1f8b131162af";
+const logo = "https://firebasestorage.googleapis.com/v0/b/ecommerce-firebase-1d466.appspot.com/o/company%2Flogo%2Fexclusive-white%20(1).png?alt=media&token=6597c848-0601-4828-b3bd-4bb5edd989ac";
 
-const RAZORPAY_KEY_ID = "rzp_test_ckuJDqO5Igd8Sr";
-const RAZORPAY_KEY_SECRET = "Bnq1S5GuV5MV0nzt4asazc3n";
+const razorpay_api = import.meta.env.VITE_RAZORPAY_API;
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
 export const configureRazorpay = (amount, orderId, userData, handlePayment) => {
     return {
@@ -11,7 +11,7 @@ export const configureRazorpay = (amount, orderId, userData, handlePayment) => {
         amount: amount * 100, // Convert to paise
         currency: 'INR',
         name: 'Exclusive',
-        description: 'Test Transaction',
+        description: 'Purchase of Exclusive Items from Our E-commerce Store',
         image: logo,
         order_id: orderId,
         prefill: {
@@ -21,7 +21,7 @@ export const configureRazorpay = (amount, orderId, userData, handlePayment) => {
         },
         handler: handlePayment, // Directly assign the handler here
         theme: {
-            color: '#F37254',
+            color: '#db4444',
         },
     };
 };
@@ -33,7 +33,7 @@ export const handleRazorPayPayment = (amount, userData) => {
             currency: "INR",
         };
 
-        const response = await fetch('http://localhost:5000/api/payment/create-order', {
+        const response = await fetch(`${razorpay_api}/api/payment/create-order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export const handleRazorPayPayment = (amount, userData) => {
             const { razorpay_payment_id, razorpay_order_id } = response;
 
             try {
-                const paymentVerificationResponse = await fetch('http://localhost:5000/api/payment/verify-order', {
+                const paymentVerificationResponse = await fetch(`${razorpay_api}/api/payment/verify-order`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export const handleRazorPayPayment = (amount, userData) => {
                     const paymentInfo = {
                         razorpay_order_id,
                         razorpay_payment_id,
-                        status : "paid",
+                        status: "paid",
                     }
                     resolve({ success: true, paymentInfo });
                 } else {
@@ -84,6 +84,9 @@ export const handleRazorPayPayment = (amount, userData) => {
         rzp1.on('payment.failed', function (response) {
             console.error('Payment failed:', response);
             toast.error('Payment failed. Please try again.');
+
+            // Close the Razorpay popup
+            rzp1.close();
             resolve({ success: false });
         });
 
