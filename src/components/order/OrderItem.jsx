@@ -50,6 +50,8 @@ const OrderItem = ({
     }
 
 
+    console.log(order)
+
     return (
       <div
         onClick={toggleCart}

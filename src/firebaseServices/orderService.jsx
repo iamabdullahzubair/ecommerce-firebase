@@ -31,7 +31,7 @@ async placeOrder(orderData) {
     ];
 
     let { cart } = orderData;
-    cart = { ...cart, tracking };
+    cart = cart.map(item => ({...item, tracking}))
 
     const orderPayload = {
       ...orderData,
