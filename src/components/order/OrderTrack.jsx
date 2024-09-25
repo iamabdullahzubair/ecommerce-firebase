@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   CheckCircle,
   AccessTime,
@@ -8,7 +8,17 @@ import {
 
 const OrderTrack = ({ status }) => {
   
-  console.log(status)
+  const [statusState, setStatusState] = useState(null)
+
+  useEffect(() => {
+    if(status.length){
+      let st = status[status.length-1]
+      const {status :sta} = st
+      setStatusState(sta)
+    }
+  }, [status])
+
+  console.log("status" , status)
   const statusSteps = [
     { label: "Order Placed", icon: <Home className="text-gray-500" /> },
     { label: "Processing", icon: <AccessTime className="text-yellow-500" /> },
@@ -16,7 +26,7 @@ const OrderTrack = ({ status }) => {
     { label: "Delivered", icon: <CheckCircle className="text-green-500" /> },
   ];
 
-  const currentStep = statusSteps.findIndex((step) => step.label === status);
+  const currentStep = statusSteps.findIndex((step) => step.label === statusState);
 
   return (
     <div className="flex items-center justify-between px-4 flex-wrap sm:flex-nowrap">

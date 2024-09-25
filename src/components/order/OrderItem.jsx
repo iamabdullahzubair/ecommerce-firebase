@@ -1,6 +1,7 @@
 import { useState } from "react";
 import OrderTrack from "./OrderTrack";
 import convertDate from "../../utils/convertTime";
+import DownloadButton from "./DownloadButton";
 
 
 const formatDateTime = (createdAt) => {
@@ -22,8 +23,6 @@ const formatDateTime = (createdAt) => {
 };
 
 
-
-
 const OrderItem = ({
     order,
     openOrderId,
@@ -32,22 +31,22 @@ const OrderItem = ({
     const [openCart, setOpenCart] = useState(null);
   
     function toggleCart() {
-
-      if(order?.paymentInfo?.status == "failed"){
-        return
+      // Prevent toggling if payment status is failed
+      if (order?.paymentInfo?.status === "failed") {
+        return;
       }
-      if (openCart == null && openOrderId == null) {
+    
+      // If the current order is already open, close it
+      if (openCart === order.id) {
+        setOpenCart(null); // Close the current order
+        setOpenOrderId(null); // Also reset the openOrderId
+      } else {
+        // Otherwise, open this order and set the order ID
         setOpenCart(order.id);
         setOpenOrderId(order.id);
       }
-      if (openCart == openOrderId) {
-        setOpenCart(null);
-        return;
-      }
-      
-      setOpenCart(order.id);
-      setOpenOrderId(order.id);
     }
+    
 
 
     console.log(order)
@@ -55,11 +54,17 @@ const OrderItem = ({
     return (
       <div
         onClick={toggleCart}
-        className={`bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md w-full cursor-pointer ${order?.paymentInfo?.status == "failed" && "bg-red-500"}`}
+        className={`bg-white flex flex-col justify-center  dark:bg-gray-800 p-4 rounded-lg shadow-md w-full cursor-pointer ${order?.paymentInfo?.status == "failed" && "bg-red-500"}`}
       >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">Order #:: {order.id}</h3>
-          <p className="text-base font-semibold">Amount : ₹{order.totalAmount}</p>
+         <div className="flex flex-col justify-center items-center gap-2">
+         <p className="text-base font-semibold">Amount : ₹{order.totalAmount}</p>
+          {
+            order?.paymentInfo?.status != "failed" && <DownloadButton orderDetails={order} />
+          }
+         </div>
+          
         </div>
         <p className="text-sm">
         Date: {order.createdAt ? formatDateTime(order.createdAt) : "N/A"}

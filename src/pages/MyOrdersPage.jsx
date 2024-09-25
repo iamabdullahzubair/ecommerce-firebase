@@ -6,6 +6,7 @@ import { useGlobalState } from "../reducers/global/GlobalContext";
 import { ORDER_ACTIONS } from "../reducers/order/orderReducer";
 import { toast } from "react-toastify";
 import { Circles } from "react-loader-spinner";
+import DownloadButton from "../components/order/DownloadButton";
 
 
 
@@ -42,7 +43,6 @@ useEffect(() => {
 if(loading){
     return <div className="min-h-screen flex items-center justify-center"><Circles color="bg-black"  /></div>
 }
-
 
   return (
     <div className="px-20">

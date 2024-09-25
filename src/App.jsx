@@ -18,6 +18,7 @@ import AboutPage from "./pages/AboutPage";
 import ProfilePage from "./pages/ProfilePage";
 import PaymentSuccess from "./components/checkout/PaymentSuccess";
 import MyOrdersPage from "./pages/MyOrdersPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function PublicLayOut() {
   return (
@@ -94,6 +95,7 @@ function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
 
           {/* Admin Routes */}
