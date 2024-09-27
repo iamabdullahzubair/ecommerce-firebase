@@ -58,7 +58,7 @@ const Signup = () => {
       {/* bg */}
       <AuthBg />
       {/* input */}
-      <div className="mr-64 ">
+      <div className="xl:mr-64 mx-auto ">
         <div className="flex flex-col justify-start text-lg w-80 gap-4">
           <p className="text-3xl font-bold -mb-2 dark:text-slate-300">
             Create an account

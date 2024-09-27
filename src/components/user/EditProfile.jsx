@@ -79,15 +79,14 @@ const EditProfile = () => {
 
   return (
     <>
-      <p className="text-lg font-bold text-secondary mb-4">Edit Your Profile</p>
-      <div className=" flex items-center justify-between gap-5">
+      <p className="text-lg text-center sm:text-left font-bold text-secondary mb-4">Edit Your Profile</p>
+      <div className=" flex items-center sm:flex-row flex-col justify-between gap-5">
         <UploadImageComponent
           image={avatar}
           setImage={handleSetImage}
           imgStyle={`rounded-full ${loading && "opacity-10"}`}
-          divStyle="w-[19rem] h-56 rounded-full border border-dashed border-secondary flex justify-center items-center"
+          divStyle=" w-32 h-32 lg:w-48 lg:h-48 rounded-full border border-dashed border-secondary flex justify-center items-center"
         />
-
         <CommonForm
           onSubmit={onSubmit}
           fields={fields}

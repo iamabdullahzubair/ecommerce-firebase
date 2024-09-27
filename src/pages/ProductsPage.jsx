@@ -73,12 +73,12 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen">
-      <div className="bg-[#1f1f1f] min-w-full text-gray-300 flex justify-center ">
-        <img className="" src={banner} alt="banner image" />
+      <div className="bg-[#1f1f1f] min-w-full text-gray-300 flex justify-center overflow-hidden">
+        <img className="scale-110" src={banner} alt="banner image" />
       </div>
 
-      <div className="flex px-20 flex-row  ">
-        <div className="lg:mt-14 mt-8 bg-gray-100 dark:bg-gray-800 pl-4 pr-8 py-5 w-64 h-full  rounded shadow-md">
+      <div className="flex md:px-20 flex-row  ">
+        <div className="lg:mt-14 mt-8 bg-gray-100 dark:bg-gray-800 pl-4 pr-8 py-5 w-64 h-full  rounded shadow-md hidden md:block">
           <p className="text-xl font-semibold mb-12">Filter Section</p>
           <p className="text-base font-semibold mb-2">Choose Category</p>
           <select
@@ -103,11 +103,11 @@ useEffect(() => {
           <CustomRadioButton label={"High to Low"} value={"desc"} selectedOption={sort} setSelectedOption={setSort}  />
           </div>
         </div>
-        <div>
+        <div className="flex items-center justify-center flex-1">
           <Products
             products={productState ? productState : products}
             showViewAllBtn={false}
-            divStyle="lg:pl-10 min-w-[70rem]"
+            divStyle="lg:pl-10 lg:min-w-[70rem]"
             loading={loading}
             notToShowTitle = {true}
           />

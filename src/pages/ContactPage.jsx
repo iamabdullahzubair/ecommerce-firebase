@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import emailjs from "emailjs-com";
 import { toast } from "react-toastify";
@@ -11,10 +11,11 @@ const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 
 const ContactPage = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data) => {
-    // Send the email using EmailJS
+    setLoading(true);
     emailjs.send(serviceId, templateId, {
       from_name: data.from_name,
       from_email: data.from_email,
@@ -23,22 +24,26 @@ const ContactPage = () => {
     }, userId)
     .then((response) => {
       console.log("Email successfully sent!", response.status, response.text);
-      toast.success("Email sent successfully!"); // Show success toast
-      reset(); // Clear the form after successful submission
+      toast.success("Email sent successfully!");
+      reset();
+      setLoading(false);
     })
     .catch((err) => {
       console.error("Failed to send email. Error:", err);
-      toast.error("Failed to send email. Please try again!"); // Show error toast
+      toast.error("Failed to send email. Please try again!");
+      setLoading(false);
+    }).finally(() => {
+      setLoading(false);
     });
   };
 
   return (
-    <div className="px-32 mt-10 mb-20">
+    <div className="lg:px-32 md:px-12 px-10 mt-10 mb-20">
       <div>
         <BreadCrumb />
       </div>
-      <div className="flex gap-8 my-12">
-        <div className="border-gray-200 rounded shadow-md px-8 py-12 w-[350px] dark:bg-gray-800">
+      <div className="flex gap-8 my-12 md:flex-row flex-col justify-center items-center">
+        <div className="border-gray-200 rounded shadow-md lg:px-8 md:px-4 px-8 py-12 lg:w-[350px] md:w-1/3 w-full dark:bg-gray-800 text-wrap">
           <div className="flex flex-col gap-2 border-b-2 border-gray-200 mb-8 pb-8">
             <span className="flex items-center gap-3">
               <p className="p-1 bg-secondary rounded-full text-white">
@@ -61,40 +66,70 @@ const ContactPage = () => {
             <p>Email : iamabdullahzubair@gmail.com</p>
           </div>
         </div>
+
         <form
-          className="flex flex-col justify-center flex-grow gap-3 py-12 px-5 shadow-md rounded dark:bg-gray-800 dark:text-gray-700"
-          onSubmit={handleSubmit(onSubmit)} // Call onSubmit on form submission
+          className="flex flex-col justify-center flex-grow gap-3 py-12 px-5 md:px-5 lg:px-8 shadow-md rounded dark:bg-gray-800 dark:text-gray-700 md:w-2/3 w-full"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex gap-3">
-            <input
-              {...register("from_name", { required: true })}
-              className="focus:outline-none py-1 px-3 w-full bg-gray-100 rounded"
-              type="text"
-              placeholder="Your Name*"
-            />
-            <input
-              {...register("from_email", { required: true })}
-              className="focus:outline-none py-1 px-3 w-full bg-gray-100 rounded"
-              type="email"
-              placeholder="Your Email*"
-            />
-            <input
-              {...register("reply_to", { required: true })}
-              className="focus:outline-none py-1 px-3 w-full bg-gray-100 rounded"
-              type="text"
-              placeholder="Your Phone*"
-            />
+          <div className="flex gap-3 lg:flex-row flex-col">
+            <div className="w-full">
+              <input
+                {...register("from_name", { required: "Name is required" })}
+                className={`focus:outline-none py-1 px-3 w-full bg-gray-100 rounded ${errors.from_name ? 'border-red-600' : 'border-gray-300'} border`}
+                type="text"
+                placeholder="Your Name*"
+              />
+              {errors.from_name && <p className="text-xs text-red-600">{errors.from_name.message}</p>}
+            </div>
+
+            <div className="w-full">
+              <input
+                {...register("from_email", { 
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                })}
+                className={`focus:outline-none py-1 px-3 w-full bg-gray-100 rounded ${errors.from_email ? 'border-red-600' : 'border-gray-300'} border`}
+                type="email"
+                placeholder="Your Email*"
+              />
+              {errors.from_email && <p className="text-xs text-red-600">{errors.from_email.message}</p>}
+            </div>
+
+            <div className="w-full">
+              <input
+                {...register("reply_to", { 
+                  required: "Phone number is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: "Invalid phone number, must be 10 digits",
+                  },
+                })}
+                className={`focus:outline-none py-1 px-3 w-full bg-gray-100 rounded ${errors.reply_to ? 'border-red-600' : 'border-gray-300'} border`}
+                type="text"
+                placeholder="Your Phone*"
+              />
+              {errors.reply_to && <p className="text-xs text-red-600">{errors.reply_to.message}</p>}
+            </div>
           </div>
+
           <div>
             <textarea
-              {...register("message", { required: true })}
-              className="focus:outline-none py-2 px-3 w-full h-40 bg-gray-100 rounded resize-none mt-3"
-              placeholder="Your Message"
+              {...register("message", { required: "Message is required" })}
+              className={`focus:outline-none py-2 px-3 w-full h-20 lg:h-40 bg-gray-100 rounded resize-none mt-3 ${errors.message ? 'border-red-600' : 'border-gray-300'} border`}
+              placeholder="Your Message*"
             />
+            {errors.message && <p className="text-xs text-red-600">{errors.message.message}</p>}
           </div>
+
           <div className="flex justify-end">
-            <button className="bg-secondary px-4 py-2 rounded text-white hover:bg-red-500">
-              Send Message
+            <button
+              disabled={loading}
+              className={`px-4 py-2 rounded ${loading ? "bg-gray-300 hover:cursor-not-allowed text-black" : "bg-secondary hover:bg-red-500 text-gray-200"}`}
+            >
+              {loading ? "Sending..." : "Send Message"}
             </button>
           </div>
         </form>
@@ -104,4 +139,3 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
-

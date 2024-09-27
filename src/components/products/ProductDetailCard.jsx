@@ -103,13 +103,13 @@ const ProductDetailCard = ({divStyle = ""}) => {
 
   if (ProductDetail) {
     return (
-      <div className={`flex px-10 gap-9 justify-start items-start ${divStyle} mt-14`}>
-        <div className="flex w-3/5">
-          <div className="flex flex-col gap-2">
+      <div className={`flex lg:flex-row flex-col sm:justify-center sm:items-center px-5 sm:px-10 gap-9 lg:justify-start lg:items-start ${divStyle} mt-14`}>
+        <div className="flex sm:w-3/4 md:w-3/5 lg:flex-row flex-col-reverse items-center justify-center gap-3">
+          <div className="flex lg:flex-col sm:gap-2 gap-1 flex-row">
             {ProductDetail?.images.slice(1).map((image) => (
               <div
                 key={image}
-                className="bg-gray-300 p-4 rounded-md w-40 h-32 flex items-center justify-center"
+                className="bg-gray-300 md:p-4 sm:p-2 p-1 rounded-md w-16 h-16 sm:w-20 sm:h-20 md:w-32 lg:w-40 md:h-32 flex items-center justify-center"
               >
                 <img
                   className="w-full h-full object-contain object-center"
@@ -119,7 +119,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
               </div>
             ))}
           </div>
-          <div className="bg-gray-300 px-8 py-10 w-full ml-4 rounded-md">
+          <div className="bg-gray-300 px-4 py-5 sm:px-8 sm:py-10 w-full sm:ml-4 rounded-md">
             <img
               className="w-full h-full object-contain object-center"
               src={ProductDetail?.thumbnail}
@@ -144,7 +144,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
             </p>
           </div>
           <p className="text-base font-semibold tracking-wide mb-2">$192.00</p>
-          <p className="text-sm w-64">{ProductDetail?.desc}</p>
+          <p className="text-sm lg:w-64 max-w-96">{ProductDetail?.desc}</p>
           <span className="w-full h-1 border-t-2 border-gray-400 my-2"></span>
           <span className="flex items-center">
             <p className="text-sm font-semibold mr-4">Colours</p>
@@ -166,8 +166,8 @@ const ProductDetailCard = ({divStyle = ""}) => {
               ))}
             </span>
           </span>
-          <div className="flex items-center justify-start gap-2">
-            <span className="border-2 border-gray-300  flex w-1/2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-start gap-2">
+            <span className="border-2 border-gray-300  flex w-full items-center justify-between sm:w-1/2">
               <button
                 onClick={decrementQuantity}
                 className="flex items-center justify-center flex-row px-2"
@@ -176,7 +176,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
               </button>
               <input
                 onChange={(e) => setQuantity(Number(e.target.value))}
-                className="focus:outline-none text-center w-12 border-r-2 border-l-2 border-gray-300 dark:bg-transparent"
+                className="focus:outline-none text-center sm:w-12 w-full border-r-2 border-l-2 border-gray-300 dark:bg-transparent"
                 type="number"
                 value={quantity}
               />

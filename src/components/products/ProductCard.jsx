@@ -56,7 +56,7 @@ function handleProductClick(){
       onMouseLeave={() => setOnHover(false)}
       onClick={handleProductClick}
     >
-      <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-md relative hover:translate-y-1 transition-transform duration-500 group">
+      <div className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 p-6 rounded-md relative hover:translate-y-1 transition-transform duration-500 group">
         <div className={`absolute left-2 top-1 bg-secondary px-2 py-1 rounded text-white ${!showDiscount && "hidden"}`}>
             <p className="text-xs">-{product?.discount}%</p>
         </div>
@@ -68,7 +68,7 @@ function handleProductClick(){
 
         {/* Image */}
         <img
-          className="object-contain w-64  h-80 lg:h-72 rounded-md transition-all duration-300"
+          className="object-contain w-48 h-48 lg:w-64  lg:h-72 rounded-md transition-all duration-300"
           src={product.thumbnail}
           alt={product.name}
         />

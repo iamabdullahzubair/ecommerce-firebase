@@ -53,12 +53,12 @@ const Login = () => {
       <AuthBg />
 
       {/* input */}
-      <div className="mr-64 ">
-        <div className="flex flex-col justify-start text-lg w-80 gap-4">
-          <p className="text-3xl font-bold -mb-2 dark:text-slate-300">
+      <div className="xl:mr-64 mx-auto">
+        <div className="flex flex-col justify-start text-lg sm:w-80 gap-4">
+          <p className="sm:text-3xl text-xl font-bold -mb-2 dark:text-slate-300">
             Login to Exclusive
           </p>
-          <p className="text-base dark:text-slate-400">
+          <p className="sm:text-base text-sm dark:text-slate-400">
             Enter your details below
           </p>
           <form onSubmit={handleSubmit}>
@@ -78,7 +78,7 @@ const Login = () => {
               <ButtonTemplate
                 type="submit"
                 btnText={"Login"}
-                btnWidth="w-36 h-16 text-base"
+                btnWidth="sm:w-36 sm:h-16 w-20 h-10 sm:text-base text-sm"
               />
 
               <Link

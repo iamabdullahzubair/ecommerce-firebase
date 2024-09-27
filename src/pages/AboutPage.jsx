@@ -4,7 +4,7 @@ const myPic = "https://firebasestorage.googleapis.com/v0/b/ecommerce-firebase-1d
 
 const AboutPage = () => {
   return (
-    <div className="px-8 py-10 max-w-3xl mx-auto bg-white dark:bg-gray-800 mt-6 dark:text-gray-200 rounded shadow-md">
+    <div className="sm:px-8 px-4 py-10 max-w-3xl mx-auto bg-white dark:bg-gray-800 mt-6 dark:text-gray-200 rounded shadow-md">
       <h1 className="text-3xl font-bold mb-4 dark:text-white">About Me</h1>
       
       {/* Profile Picture Section */}

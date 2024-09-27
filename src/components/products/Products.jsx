@@ -21,7 +21,7 @@ const Products = ({
     navigate("/products")
   };
   return (
-    <div className={`lg:pl-32 lg:pr-20 px-10 lg:mt-8 mt-4 ${divStyle}`}>
+    <div className={`lg:pl-32 lg:pr-20 px-6 lg:mt-8 mt-4 ${divStyle}`}>
       <TitleTemplate
         title={title}
         heading={heading}
@@ -40,7 +40,7 @@ const Products = ({
           />
         </div>
       ) : (
-        <div className="flex lg:flex-wrap flex-nowrap flex-col lg:flex-row">
+        <div className="flex sm:flex-wrap flex-col sm:flex-row gap-5">
           {products.map(product => (
             <ProductCard key={product.pId} product={product}  />
           ))}
@@ -49,6 +49,7 @@ const Products = ({
       {!loading && showViewAllBtn &&  (
         <div className="flex items-center justify-center mt-8 ">
           <ButtonTemplate
+          btnWidth="md:w-56 sm:w-32"
             btnText={"View All Products"}
             onBtnTemplateClick={handleViewAllProductsBtn}
           />

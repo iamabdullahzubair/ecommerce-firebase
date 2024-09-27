@@ -7,7 +7,7 @@ const Footer = () => {
   const QuickLink = ["Privacy Policy", "Terms of Use", "FAQ", "Contact"];
   return (
     <>
-      <div className="mt-8 py-12 px-20 bg-black  w-full flex lg:flex-row flex-col lg:justify-between justify-center items-start text-slate-300 gap-3">
+      <div className="mt-8 py-5 lg:py-12 px-10 lg:px-20 bg-black  w-full flex sm:flex-row flex-wrap flex-col lg:justify-between justify-center items-start text-slate-300 gap-3">
         <div>
           <p className="text-2xl font-semibold mb-3">Exclusive</p>
           <div className="">
@@ -69,7 +69,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="flex bg-black text-slate-500 border-t border-gray-700 px-20 py-4 items-center justify-center gap-1">
+      <div className="flex bg-black text-slate-500 border-t border-gray-700 px-8 lg:px-20 py-4 items-center justify-center gap-1">
         <CopyrightIcon />
         <p>Copyright Mohd Abdullah 2024. All right reserved</p>
       </div>

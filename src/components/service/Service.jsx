@@ -23,11 +23,11 @@ const Service = () => {
   ];
 
   return (
-    <div className="px-20 mt-8 flex flex-col lg:flex-row justify-center items-center lg:gap-4 gap-7">
+    <div className="md:px-20 px-10 mt-8 flex flex-col sm:flex-row justify-center items-center lg:gap-4 gap-3">
       {services.map((service, index) => (
         <div
           key={index}
-          className="flex flex-col items-center justify-center lg:gap-2 gap-1 p-8"
+          className="flex flex-col items-center justify-center lg:gap-2 gap-1 lg:p-8 p-4"
         >
           <div className="bg-gray-400 p-2 rounded-full dark:bg-white">
             <div className="bg-black p-4 rounded-full dark:bg-gray-900">
@@ -37,8 +37,8 @@ const Service = () => {
               })}
             </div>
           </div>
-          <p className="text-lg font-bold">{service.p1}</p>
-          <p>{service.p2}</p>
+          <p className="text-base font-semibold lg:text-lg  lg:font-bold">{service.p1}</p>
+          <p className="text-xs">{service.p2}</p>
         </div>
       ))}
     </div>

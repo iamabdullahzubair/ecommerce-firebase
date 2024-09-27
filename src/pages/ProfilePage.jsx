@@ -39,10 +39,10 @@ const ProfilePage = () => {
   }
   
   return (
-    <div className="px-32 py-10 min-h-screen">
-      <div className="flex justify-between">
+    <div className="lg:px-32 md:px-16 sm:px-10 px-6 py-10 min-h-screen">
+      <div className="flex justify-between sm:flex-row flex-col">
         <BreadCrumb />
-        <p className="text-base tracking-wider">
+        <p className="text-base tracking-wider mt-5 text-center">
           Welcome!{" "}
           <span className="text-secondary">
             {userData?.firstName && userData?.lastName
@@ -51,23 +51,23 @@ const ProfilePage = () => {
           </span>
         </p>
       </div>
-      <div className="mt-14 flex ">
+      <div className="sm:mt-14 mt-4 flex sm:flex-row flex-col gap-5  justify-center items-center sm:items-start ">
         {/* Links */}
-        <div className="min-w-40">
-          <p className="text-base font-bold mb-2">Manage My Account</p>
-          <div className="flex flex-col justify-start items-start ml-5 text-gray-500 gap-2">
+        <div className="sm:min-w-40">
+          <p className="text-base font-semibold sm:font-bold mb-2 hidden sm:block">Manage My Account</p>
+          <div className="flex sm:flex-col justify-start items-start text-base font-semibold sm:ml-5 text-gray-500 gap-2">
             <button onClick={() => setActiveTab("profile")}>My Profile</button>
             <button onClick={() => setActiveTab("address")}>Address Book</button>
             <button onClick={() => setActiveTab("")}>Change Password</button>
           </div>
-          <p className="text-base font-bold mb-2 mt-2">Managae My Orders</p>
-          <div className="flex flex-col justify-start items-start ml-5 text-gray-500 gap-2">
+          <p className="hidden sm:block text-base font-bold mb-2 mt-2">Managae My Orders</p>
+          <div className=" hidden sm:flex flex-col justify-start items-start ml-5 text-gray-500 gap-2">
             <button onClick={() => navigate("/my-orders")}>My Orders</button>
             <button onClick={() => setActiveTab("return")}>My Returns</button>
             <button onClick={() => setActiveTab("cancel")}>My Cancellations</button>
           </div>
         </div>
-        <div className="ml-20 border-gray-50 border-2  rounded shadow-md px-10 py-5 w-full">
+        <div className="md:ml-20 border-gray-50 border-2  rounded shadow-md px-5 md:px-10 py-5 w-full">
           { activeTab == 'profile' && <EditProfile /> }
           {activeTab == 'address' && <AddressBook />}
         </div>

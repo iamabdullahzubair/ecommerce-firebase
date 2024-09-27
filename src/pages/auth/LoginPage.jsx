@@ -1,13 +1,10 @@
 import React from 'react'
-import Footer from '../../components/footer/Footer'
 import Login from '../../components/authComponent/Login'
 
 const LoginPage = () => {
   return (
-    <div className='mt-16'>
+    <div className='md:mt-16 mt-40 min-h-screen'>
       <Login />
-      <Footer />
-
     </div>
   )
 }

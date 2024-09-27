@@ -24,8 +24,8 @@ const CartList = ({ cart: cartItem, onUpdateQuantity }) => {
   }, [])
   if (cartItem) {
     return (
-      <div className="flex gap-5 justify-between items-center  border border-gray-100 shadow-sm rounded-sm px-10 py-5 mb-3">
-        <div className="min-w-48 w-56">
+      <div className="flex gap-5 justify-between items-center  border border-gray-100 shadow-sm rounded-sm px-4 py-5 mb-3 overflow-x-scroll md:overflow-hidden">
+        <div className=" w-2/6">
           <span className="flex gap-6 items-center">
             <img
               className="w-20 h-12 object-contain"
@@ -35,8 +35,8 @@ const CartList = ({ cart: cartItem, onUpdateQuantity }) => {
             <p className="text-sm text-wrap">{cartItem.name}</p>
           </span>
         </div>
-        <p>${cartItem.price}</p>
-        <span>
+        <p className="w-1/6">${cartItem.price}</p>
+        <span className="w-1/6">
           <input
             className="focus:outline-none w-14 border border-gray-400 px-2 py-1 font-semibold rounded dark:text-gray-700"
             onChange={(e) => handleUpdateQuantity(e)}
@@ -44,8 +44,9 @@ const CartList = ({ cart: cartItem, onUpdateQuantity }) => {
             value={quantity}
           />
         </span>
-        <p>${Number(cartItem.price) * Number(quantity)}</p>
+        <p className="w-1/6">${Number(cartItem.price) * Number(quantity)}</p>
         <button
+        className="w-1/6 text-start"
         onClick={handleRemoveCart}
         >
           <DeleteForeverIcon />

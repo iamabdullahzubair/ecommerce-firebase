@@ -66,10 +66,10 @@ const TopLayer = () => {
   }
 
   return (
-    <div className="px-20 mt-10 flex items-start justify-start">
+    <div className="lg:px-20 px-5 mt-10 flex items-start justify-start">
       {/* Links */}
 
-      <div className="flex flex-col gap-3 border-r border-gray-300 px-10 ">
+      <div className="hidden lg:flex flex-col gap-3 border-r border-gray-300 px-10 ">
         {shops.map((shop) => (
           <Link className="hover:text-secondary" key={shop} to={"#"}>
             {shop}
@@ -78,18 +78,18 @@ const TopLayer = () => {
       </div>
 
       {/* carousel */}
-      <div className="bg-black flex-1 flex flex-col text-white mx-10">
-        <div className="flex mx-4 my-10 justify-between  ">
-          <div className="flex flex-col pl-16 items-start justify-start gap-2">
+      <div className="bg-black flex-1 flex flex-col text-white md:mx-10 rounded-sm">
+        <div className="flex md:mx-4 md:my-10 my-5 justify-between  ">
+          <div className="flex flex-col pl-5 md:pl-16 items-start justify-start gap-2">
             <span className="flex justify-start items-center gap-1 mb-4">
               <img
-                className="w-16 object-contain filter invert"
+                className="md:w-16 w-10 object-contain filter invert"
                 src={currentCarousel.img1}
                 alt={currentCarousel.text}
               />
               <p className="text-sm font-extralight">{currentCarousel.text}</p>
             </span>
-            <p className="text-3xl font-bold flex flex-col gap-2 tracking-wider">
+            <p className="lg:text-3xl text-base md:font-bold flex flex-col gap-2 tracking-wider">
               <span>Up to {currentCarousel.discount}% </span>
               <span>off Voucher</span>
             </p>
@@ -100,9 +100,9 @@ const TopLayer = () => {
               <ArrowRightAltIcon />
             </button>
           </div>
-          <div className="">
+          <div className="flex-1 mt-14 w-48 md:flex-none md:mt-0 md:w-auto">
             <img
-              className="w-10/12"
+              className="lg:w-10/12 w-80"
               src={currentCarousel.img2}
               alt={currentCarousel.text}
             />

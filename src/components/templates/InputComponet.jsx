@@ -15,5 +15,5 @@ function Input({ label, name, register, required, error, textStyle="text-gray-40
       </div>
     );
   }
-
+ 
   export default Input
