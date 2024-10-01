@@ -21,7 +21,7 @@ const Products = ({
     navigate("/products")
   };
   return (
-    <div className={`lg:pl-32 lg:pr-20 px-6 lg:mt-8 mt-4 ${divStyle}`}>
+    <div className={`lg:pl-32 lg:pr-5 px-6 lg:mt-8 mt-4 ${divStyle}`}>
       <TitleTemplate
         title={title}
         heading={heading}

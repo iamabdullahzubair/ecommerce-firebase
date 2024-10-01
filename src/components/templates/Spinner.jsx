@@ -1,6 +1,6 @@
 import React from "react";
 
-const Spinner = ({borderColor = "border-white"}) => {
+const Spinner = ({borderColor = "border-black"}) => {
   return (
     <div>
       <div className="flex justify-center items-center">

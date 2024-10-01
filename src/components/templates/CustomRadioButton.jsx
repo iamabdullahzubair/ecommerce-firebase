@@ -16,12 +16,12 @@ const CustomRadioButton = ({
         onChange={() => setSelectedOption(value)}
       />
       <label htmlFor={value} className="flex items-center cursor-pointer">
-        <span className="w-4 h-4 border-2 rounded-full flex-shrink-0 border-gray-800 flex justify-center items-center transition duration-200">
+        <span className="w-4 h-4 border-2 rounded-full flex-shrink-0 border-gray-800 dark:border-gray-300 flex justify-center items-center transition duration-200">
           {selectedOption === value && (
-            <span className="w-2 h-2 bg-gray-800 rounded-full"></span>
+            <span className="w-2 h-2 bg-gray-800 dark:bg-gray-300 rounded-full"></span>
           )}
         </span>
-        <span className="ml-2 text-base text-gray-700">{label}</span>
+        <span className="ml-2 text-base text-gray-700 dark:text-white">{label}</span>
       </label>
     </div>
   );

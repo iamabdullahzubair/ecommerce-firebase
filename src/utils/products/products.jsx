@@ -158,4 +158,11 @@ export const fetchFilteredAndSortedProducts = async (minPrice, maxPrice) => {
 
   }
 
+
 };
+
+
+
+
+
+

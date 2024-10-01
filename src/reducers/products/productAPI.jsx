@@ -29,9 +29,10 @@ export const addProduct = async (productData, files) => {
         };
         const productResponse = await productService.addProduct(productWithImages);
         if(productResponse.success){
+            productWithImages.pId = productResponse.productId
             return {
                 success : true,
-                pId : productResponse.productId
+                product : productWithImages
             }
         }
         return {success : false, message : "Failed to add product"};  // Return response from the service

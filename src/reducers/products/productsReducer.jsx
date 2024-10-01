@@ -21,7 +21,7 @@ export const productReducer = (state, action) => {
       
     case PRODUCT_ACTIONS.ADD_PRODUCTS: 
     console.log("add") 
-      return {...state}    
+      // return {...state}    
       return {
         ...state,
         products: [...state.products, action.payload],  // Add products to existing array

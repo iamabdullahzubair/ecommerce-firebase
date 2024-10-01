@@ -96,7 +96,7 @@ useEffect(() => {
           </select>
           <p className="text-base font-semibold mb-2">Sort by Price</p>
           <div className="flex gap-2 text-gray-600">
-            <CustomRadioButton label={"Low to Hign"} value={"asc"} selectedOption={sort} setSelectedOption={setSort}  />
+            <CustomRadioButton label={"Low to High"} value={"asc"} selectedOption={sort} setSelectedOption={setSort}  />
             
           </div>
           <div className="flex gap-2 text-gray-600">

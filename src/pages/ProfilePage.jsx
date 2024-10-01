@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useGlobalState } from "../reducers/global/GlobalContext";
-import BreadCrumb from "../AdminDashboard/adminComponent/sidebar/BreadCrumb";
 
 import EditProfile from "../components/user/EditProfile";
 import { ProgressBar } from "react-loader-spinner";
 import AddressBook from "../components/user/AddressBook";
 import { useNavigate } from "react-router-dom";
+import BreadCrumb from "../components/templates/BreadCrumb";
 
 const ProfilePage = () => {
   const {

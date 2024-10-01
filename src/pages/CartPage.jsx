@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import BreadCrumb from "../AdminDashboard/adminComponent/sidebar/BreadCrumb";
 import CartList from "../components/cart/CartList";
 import { useGlobalState } from "../reducers/global/GlobalContext";
 import Spinner from "../components/templates/Spinner";
@@ -8,6 +7,7 @@ import { CART_ACTIONS } from "../reducers/cart/cartReducer";
 import { clearUserCart, removeFromCart, updateCartItem } from "../reducers/cart/CartAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import BreadCrumb from "../components/templates/BreadCrumb";
 
 const CartPage = () => {
   const {

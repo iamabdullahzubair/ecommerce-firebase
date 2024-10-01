@@ -5,9 +5,10 @@ import Sidebar from "./adminComponent/sidebar/Sidebar";
 import AdminProducts from "./adminPages/AdminProducts";
 import AddProduct from "./adminComponent/products/AddProduct";
 import AdminProductDetail from "./adminPages/AdminProductDetail";
-import { auth } from "../firebase";
 import { useGlobalState } from "../reducers/global/GlobalContext";
 import Protected from "../components/authComponent/Protected";
+import AdminUsersPage from "./adminPages/AdminUsersPage";
+import AdminOrdersPage from "./adminPages/AdminOrdersPage";
 
 function AdminLayout() {
   const {
@@ -47,6 +48,8 @@ const AdminApp = () => {
           <Route index element={<AdminHome />} />
           <Route path="dashboard" element={<AdminHome />} />
           <Route path="products" element={<AdminProducts />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="orders" element={<AdminOrdersPage />} />
           <Route
             path="products/product-detail/:id"
             element={<AdminProductDetail />}

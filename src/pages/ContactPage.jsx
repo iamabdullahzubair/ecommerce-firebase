@@ -4,7 +4,7 @@ import emailjs from "emailjs-com";
 import { toast } from "react-toastify";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
-import BreadCrumb from "../AdminDashboard/adminComponent/sidebar/BreadCrumb";
+import BreadCrumb from "../components/templates/BreadCrumb";
 
 const userId = import.meta.env.VITE_EMAILJS_USER_ID;
 const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;

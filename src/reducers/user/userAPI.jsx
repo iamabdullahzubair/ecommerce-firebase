@@ -33,3 +33,20 @@ export async function updateUserProfile(updatedData) {
     return { success: false, error: error.message };
   }
 }
+
+// for admin
+export async function updateUsersProfile(updatedData, userId) {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User is not authenticated, redirect to login");
+    return { success: false, message: "User not authenticated" };
+  }
+  try {
+    const service = new UserService(user.uid);
+    const { success, error } = await service.updateUsersProfile(updatedData, userId);
+    if (success) return { success: true };
+    if (error) return { success: false, error };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}

@@ -1,13 +1,17 @@
 import React from "react";
 import SendIcon from "@mui/icons-material/Send";
 import CopyrightIcon from '@mui/icons-material/Copyright';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import TwitterIcon from '@mui/icons-material/Twitter';
 import { Link } from "react-router-dom";
 const Footer = () => {
   const Account = ["My Account", "Login/Register", "Cart", "Whishlist", "Shop"];
   const QuickLink = ["Privacy Policy", "Terms of Use", "FAQ", "Contact"];
   return (
     <>
-      <div className="mt-8 py-5 lg:py-12 px-10 lg:px-20 bg-black  w-full flex sm:flex-row flex-wrap flex-col lg:justify-between justify-center items-start text-slate-300 gap-3">
+      <footer className="mt-8 py-5 lg:py-12 px-10 lg:px-20 bg-black  w-full flex sm:flex-row flex-wrap flex-col lg:justify-between justify-center items-start text-slate-300 gap-3">
         <div>
           <p className="text-2xl font-semibold mb-3">Exclusive</p>
           <div className="">
@@ -61,14 +65,25 @@ const Footer = () => {
         <div>
           <p className="text-lg font-semibold mb-3">Download App</p>
           <div>
-            <p className="text-xs">Save $3 with App New User Only</p>
+            <p className="text-xs mb-1">Save $3 with App New User Only</p>
             {/* app */}
-            <div></div>
+            <div className="flex items-center justify-center gap-2">
+              <img src="assets/app/qrcode.png" alt="qrcode" />
+              <span className="space-y-2">
+              <img src="assets/app/playstore.png" alt="playstore" />
+              <img src="assets/app/appstore.png" alt="appstore" />
+              </span>
+            </div>
             {/* social */}
-            <div></div>
+            <div className="text-base flex gap-3 pt-3 items-center">
+              <Link to={"/"} className="hover:text-secondary" ><FacebookIcon className="cursor-pointer" /> </Link>
+              <Link to={"/"} className="hover:text-secondary" ><TwitterIcon className="cursor-pointer" /> </Link>
+              <Link to={"/"} className="hover:text-secondary" ><InstagramIcon className="cursor-pointer" /> </Link>
+              <Link to={"/"} className="hover:text-secondary" ><LinkedInIcon className="cursor-pointer" /> </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </footer>
       <div className="flex bg-black text-slate-500 border-t border-gray-700 px-8 lg:px-20 py-4 items-center justify-center gap-1">
         <CopyrightIcon />
         <p>Copyright Mohd Abdullah 2024. All right reserved</p>

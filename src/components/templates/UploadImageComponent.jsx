@@ -45,6 +45,7 @@ function UploadImageComponent({ image, setImage, divStyle, index, imgStyle }) {
             src={image}
             className={`w-full h-full object-cover rounded-full ${imgStyle}`}
             alt="Uploaded"
+            loading="lazy"
           />
         ) : (
           <AddIcon fontSize="large" className="text-secondary" />

@@ -66,7 +66,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
     navigate(`/admin/products/add-product/${id}`)
   }
 
-  const handleAddToCartBtn = async () => {
+  const handleAddToCartBtn = async (flag) => {
   
     const { name, price, thumbnail, } = ProductDetail
     let myCartItem = { pId :id, name, price, thumbnail, quantity, selectedSize:selectSize, userId: userData.id };
@@ -84,6 +84,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
     dispatch({ type: CART_ACTIONS.SET_LOADING });
     await addToCart(userData.id, myCartItem);
     dispatch({ type: CART_ACTIONS.ADD_TO_CART, payload: myCartItem });
+    if(flag=="buyNow") return
     toast.success("Added to cart", {position:"bottom-center"});
   };
     
@@ -93,7 +94,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
       toast.warn("Please select size")
       return
     }
-    await handleAddToCartBtn();
+    await handleAddToCartBtn("buyNow");
     navigate(`/products/product-detail/checkout/${id}`)
   }
 
@@ -115,6 +116,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
                   className="w-full h-full object-contain object-center"
                   src={image}
                   alt="Product Image"
+                  loading="lazy"
                 />
               </div>
             ))}
@@ -124,6 +126,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
               className="w-full h-full object-contain object-center"
               src={ProductDetail?.thumbnail}
               alt="image"
+              loading="lazy"
             />
           </div>
         </div>

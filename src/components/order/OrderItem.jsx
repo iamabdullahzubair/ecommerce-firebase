@@ -54,7 +54,7 @@ const OrderItem = ({
     return (
       <div
         onClick={toggleCart}
-        className={`bg-white flex flex-col justify-center  dark:bg-gray-800 p-4 rounded-lg shadow-md w-full cursor-pointer ${order?.paymentInfo?.status == "failed" && "bg-red-500"}`}
+        className={` flex flex-col justify-center   p-4 rounded-lg shadow-md w-full cursor-pointer ${order?.paymentInfo?.status === "failed" ? "bg-red-500 dark:bg-red-500" : "bg-white dark:bg-gray-800"}`}
       >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">Order #:: {order.id}</h3>

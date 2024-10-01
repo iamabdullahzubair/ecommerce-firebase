@@ -169,7 +169,7 @@ const Navbar = () => {
                 onClick={() => setIsUserMenu(!isuserMenu)}
               />
               {isuserMenu && (
-                <div className="flex flex-col absolute top-12 right-12 px-6 py-3 gap-3 text-base text-white bg-black bg-opacity-35   backdrop-blur-lg rounded">
+                <div className="flex flex-col absolute top-12 right-12 px-6 py-3 gap-3 text-base text-white bg-black bg-opacity-35   backdrop-blur-lg rounded z-50">
                   {accountNav.map((nav) => (
                     <Link
                       to={nav.link}

@@ -8,6 +8,23 @@ class UserService {
     this.usersCollection = collection(db, "users");
   }
 
+  // Fetch all user details
+  async getAllUsers() {
+    try {
+      const usersSnapshot = await getDocs(this.usersCollection); // Fetch all documents from the products collection
+      const usersList = usersSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      return {
+        success: true,
+        data: usersList, // Return the list of products
+      };
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      return { success: false, error: error.message };
+    }
+  }
   // Fetch user details by userId
   async getUserDetails() {
     try {
@@ -29,6 +46,17 @@ class UserService {
   async updateUserProfile(updatedData) {
     try {
       const userDoc = doc(this.usersCollection, this.userId);
+      await updateDoc(userDoc, updatedData);
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      return { success: false, error: error.message };
+    }
+  }
+  // for admin
+  async updateUsersProfile(updatedData, userId) {
+    try {
+      const userDoc = doc(this.usersCollection, userId);
       await updateDoc(userDoc, updatedData);
       return { success: true };
     } catch (error) {

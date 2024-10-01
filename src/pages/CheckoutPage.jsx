@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import BreadCrumb from "../AdminDashboard/adminComponent/sidebar/BreadCrumb";
 import AddressForm from "../components/user/AddressForm";
 import { useGlobalState } from "../reducers/global/GlobalContext";
 import { toast } from "react-toastify";
 import { placeOrder, updateOrder } from "../reducers/order/orderApi";
 import { ORDER_ACTIONS } from "../reducers/order/orderReducer";
-import { handleRazorPayPayment } from "../components/checkout/utils/razorpay";
+import { displayRazorpay, handleRazorPayPayment } from "../components/checkout/utils/razorpay";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserDetails, updateUserProfile } from "../reducers/user/userAPI";
 import { USER_ACTIONS } from "../reducers/user/userReducer";
 import { CART_ACTIONS } from "../reducers/cart/cartReducer";
 import { clearUserCart, removeFromCart } from "../reducers/cart/CartAPI";
 import CustomRadioButton from "../components/templates/CustomRadioButton";
+import LoadingOverlay from "../components/order/LoadingOverlay";
+import BreadCrumb from "../components/templates/BreadCrumb";
 
 const CheckoutPage = () => {
   const {
@@ -78,61 +79,50 @@ const CheckoutPage = () => {
   useEffect(() => {
     setDisplayCartItems();
   }, []);
+
+
   const handlePlaceOrder = async () => {
     try {
-      if (!selectedPaymentOption)
+      // Ensure payment option is selected
+      if (!selectedPaymentOption) {
         return toast.error("Please select a payment option");
-
-      // Validate form and get address directly from the form
+      }
+  
+      // Validate the form and get the address from the form directly
       if (!(await validateAddressForm())) return;
-
-      // Instead of relying on `userAddress`, use the form data directly
+  
       const formData = formRef.current.getFormData();
-      const { saveAddress, ...userAddressData } = formData; // Extract user address from form data
-
+      const { saveAddress, ...userAddressData } = formData; // Extract address data
+  
       dispatch({ type: ORDER_ACTIONS.SET_LOADING, payload: true });
       setloading(true);
-      const orderData = createOrderData(userAddressData); // Pass the address data to createOrderData
-
+  
+      // Create the order data object
+      const orderData = createOrderData(userAddressData);
+  
+      // Handle different payment options (Cash on Delivery / Online)
       if (selectedPaymentOption === "cashondelivery") {
         await handleCashOnPayment(orderData);
-        return;
+      } else {
+        await handleOnlinePayment(orderData, userAddressData);
       }
-
-      const { success, orderId } = await placeOrder(orderData);
-
-      if (!success) {
-        handleError("Error placing order.");
-        return;
-      }
-
-      const paymentResult = await handleRazorPayPayment(
-        totalAmount,
-        userAddressData
-      );
-      console.log("payment result", paymentResult);
-      await handleOrderCompletion(paymentResult, orderId, orderData);
     } catch (error) {
-      handleError("Error placing order.");
+      handleError("Error placing order.", error);
     } finally {
       setloading(false);
       dispatch({ type: ORDER_ACTIONS.SET_LOADING, payload: false });
     }
   };
-
+  
+  // Validate Address Form
   const validateAddressForm = async () => {
     if (formRef.current) {
       const isValid = await formRef.current.trigger();
       if (isValid) {
         const formData = formRef.current.getFormData();
-        const {
-          saveAddress,
-          firstName,
-          lastName,
-          email,
-          phoneNumber,
-          ...userAddress
-        } = formData;
+        const { saveAddress, firstName, lastName, email, phoneNumber, ...userAddress } = formData;
+  
+        // If user opted to save the address, update profile
         if (saveAddress) {
           const updatedData = {
             ...userData,
@@ -148,12 +138,12 @@ const CheckoutPage = () => {
               type: USER_ACTIONS.SET_USER_DATA,
               payload: updatedData,
             });
-          }
-          if (error) {
-            console.log("error on Updating data", error);
+          } else if (error) {
+            console.error("Error updating profile:", error);
           }
         }
-        delete formData.saveAddress;
+  
+        // Set user address for further processing
         setUserAddress(formData);
         return true;
       }
@@ -161,23 +151,83 @@ const CheckoutPage = () => {
     }
     return false;
   };
-
+  
+  // Create Order Data (used by both COD and online payments)
   const createOrderData = (userAddressData) => ({
     cart: displayCart,
     totalAmount,
     shippingAddress: userAddressData,
     paymentOption: selectedPaymentOption,
   });
-
+  
+  // Handle Cash on Delivery (COD) Payment
   const handleCashOnPayment = async (orderData) => {
-    const codOrder = { ...orderData, paymentInfo: { status: "pending" } };
+    const codOrder = { ...orderData, paymentInfo: { method: "CashOnDelivery", status: "pending" } };
     const { success, orderId, error } = await placeOrder(codOrder);
-    if (!success) {
-      handleError("Error placing order.");
-      return;
-    }
+  
     if (success) {
-      // Perform cart operations here
+      await clearCartAfterOrder(orderId);
+      toast.success("Order placed successfully with Cash on Delivery!");
+      navigate(`/order-success/${orderId}`);
+    } else {
+      handleError(error || "Error placing COD order.");
+    }
+  };
+  
+  // Handle Online Payment
+  const handleOnlinePayment = async (orderData, userAddressData) => {
+    try {
+      await displayRazorpay();
+  
+      const paymentResult = await handleRazorPayPayment(totalAmount, userAddressData);
+  
+      if (paymentResult.success) {
+        const onlineOrder = {
+          ...orderData,
+          paymentInfo: paymentResult.paymentInfo,
+        };
+        await handleAfterPaymentSuccess(onlineOrder);
+      } else {
+        await handleAfterPaymentFailure(orderData);
+      }
+    } catch (error) {
+      handleError("Error placing online order.", error);
+    } finally {
+      setloading(false);
+      dispatch({ type: ORDER_ACTIONS.SET_LOADING, payload: false });
+    }
+  };
+  
+  // Handle success after payment
+  const handleAfterPaymentSuccess = async (onlineOrder) => {
+    const { success, orderId, error } = await placeOrder(onlineOrder);
+  
+    if (success) {
+      await clearCartAfterOrder();
+      toast.success("Order successfully placed with online payment!");
+      navigate(`/order-success/${orderId}`);
+    } else {
+      handleError(error || "Error adding order to database.");
+    }
+  };
+  
+  // Handle payment failure
+  const handleAfterPaymentFailure = async (orderData) => {
+    const failedOrder = { ...orderData, paymentInfo: { status: "failed" } };
+    const { success, error } = await placeOrder(failedOrder);
+  
+    if (success) {
+      await clearCartAfterOrder()
+      toast.error("Payment failed, but order was logged as failed.");
+      navigate("/"); // Redirect on failure
+    } else {
+      handleError(error || "Error logging failed order.");
+    }
+  };
+  
+  // Clear the cart after placing the order
+  const clearCartAfterOrder = async () => {
+    try {
       if (!id) {
         await clearUserCart(userData.id);
         dispatch({ type: CART_ACTIONS.SET_CART, payload: [] });
@@ -186,74 +236,20 @@ const CheckoutPage = () => {
         const updatedCart = cart.filter((item) => item.pId !== id);
         dispatch({ type: CART_ACTIONS.UPDATE_CART, payload: updatedCart });
       }
-      const updatedOrder = { ...codOrder, id: orderId };
-      dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: updatedOrder });
-      setloading(false);
-      toast.success("Order Placed successfully with Cash On Delivery");
-      navigate(`/order-success/${orderId}`);
-      return;
+    } catch (error) {
+      console.error("Error clearing cart:", error);
     }
   };
-  const handleOrderCompletion = async (paymentResult, orderId, orderData) => {
-    if (paymentResult.success) {
-      const updatedOrder = {
-        ...orderData,
-        id: orderId,
-        paymentInfo: paymentResult.paymentInfo,
-      };
-
-      const { success, message, error } = await updateOrder(
-        orderId,
-        updatedOrder
-      );
-      if (success) {
-        dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: updatedOrder });
-
-        // Perform cart operations here
-        if (!id) {
-          await clearUserCart(userData.id);
-          dispatch({ type: CART_ACTIONS.SET_CART, payload: [] });
-        } else {
-          await removeFromCart(userData.id, id);
-          const updatedCart = cart.filter((item) => item.pId !== id);
-          dispatch({ type: CART_ACTIONS.UPDATE_CART, payload: updatedCart });
-        }
-
-        setloading(false);
-        toast.success("Order successfully placed");
-        navigate(`/order-success/${orderId}`);
-      } else {
-        toast.error("Error updating order." + (message || error));
-      }
-    } else {
-      // coming from product page 
-      if (id) {
-        await removeFromCart(userData.id, id);
-        const updatedCart = cart.filter((item) => item.pId !== id);
-        dispatch({ type: CART_ACTIONS.UPDATE_CART, payload: updatedCart });
-      }
-      // Handle payment failure
-      const failedOrder = { ...orderData, paymentInfo: { status: "failed" } };
-      const { success, message, error } = await updateOrder(
-        orderId,
-        failedOrder
-      );
-      if (success) {
-        dispatch({ type: ORDER_ACTIONS.PLACE_ORDER, payload: failedOrder });
-      }
-      if (!success) {
-        handleError(message || error);
-      }
-      setloading(false);
-      navigate("/");
-    }
-  };
-
-  const handleError = (message) => {
+  
+  // Handle Errors
+  const handleError = (message, error = null) => {
+    console.error("Error:", message, error);
     toast.error(message);
     setloading(false);
     dispatch({ type: ORDER_ACTIONS.SET_ERROR, payload: message });
   };
+
+
 
   return (
     <div className="min-h-screen px-32 py-10 flex flex-col gap-4">
@@ -273,6 +269,7 @@ const CheckoutPage = () => {
           handlePlaceOrder={handlePlaceOrder}
         />
       </div>
+      <LoadingOverlay isLoading={loading} />
     </div>
   );
 };
@@ -341,7 +338,7 @@ const PaymentOptions = ({
   setSelectedPaymentOption,
 }) => (
   <div className="mt-5">
-    <p className="text-base font-semibold text-gray-700 mb-3">
+    <p className="text-base font-semibold text-gray-700 mb-3 dark:text-white">
       Choose Payment Options:
     </p>
     {["Net Banking / UPI", "Cash On Delivery"].map((option) => (

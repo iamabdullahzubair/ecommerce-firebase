@@ -8,11 +8,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import { uploadImage } from "../../../utils/products/uploadImages";
-import { addProduct, fetchProduct, updateProductInFirestore } from "../../../utils/products/products";
 import { useGlobalState } from "../../../reducers/global/GlobalContext";
 import { PRODUCT_ACTIONS } from "../../../reducers/products/productsReducer";
 import Spinner from "../../../components/templates/Spinner";
 import { useNavigate, useParams } from "react-router-dom";
+import { addProduct, fetchProduct, updateProductInFirestore } from "../../../utils/products/products";
+import imageCompression from "browser-image-compression";
+
 
 const initialState = {
   name: "",
@@ -49,6 +51,12 @@ const allSizes = [
   { size: "XL", selected: false },
 ];
 
+
+const hasNonNullValue = (array) => {
+  return array.some(value => value !== null);
+};
+
+
 const AddProduct = () => {
   const {id : productID} = useParams()
   const {
@@ -61,6 +69,7 @@ const AddProduct = () => {
   const [product, setProduct] = useState(initialState);
   // Array to store multiple images
   const [imageFiles, setImageFiles] = useState([null, null, null, null, null]);
+  const [previewImage, setPreviewImage] = useState([null, null, null, null, null]);
   const [imageUrl, setImageUrl] = useState([]);
   const [imgUploading, setImgUploading] = useState(false);
   const [sizes, setSize] = useState(allSizes);
@@ -84,25 +93,34 @@ const AddProduct = () => {
 
   // Function to handle individual image upload
   const handleSetImage = ({ files, index }) => {
+    // URL.createObjectURL(image)
     if (files.length == 1) {
-      const newImages = [...imageFiles];
+      let newImages = [...imageFiles];
       newImages[index] = files[0];
       setImageFiles(newImages);
+      newImages = [...previewImage]
+      newImages[index] = URL.createObjectURL(files[0])
+      setPreviewImage(newImages)
       return;
     }
     if (files.length == 5) {
       setImageFiles(files);
+      const newImages = files.map(f => URL.createObjectURL(f))
+      setPreviewImage(newImages)
       return;
     }
     const newImages = [];
+    const newImagesUrl = [];
     for (let i = 0; i < 5; i++) {
       if (files && files[i]) {
+        newImagesUrl.push(URL.createObjectURL(files[i]));
         newImages.push(files[i]);
       } else {
         newImages.push(null);
       }
     }
     setImageFiles(newImages);
+    setPreviewImage(newImagesUrl);
   };
 
   // Flash sale state
@@ -117,6 +135,8 @@ const AddProduct = () => {
       const data = await fetchProduct(id);
       if (data) {
         setProduct(data);
+        const {images} = data
+        setPreviewImage(images || [null, null, null, null, null])
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -161,83 +181,112 @@ const AddProduct = () => {
     setProduct(newProduct);
   };
 
-  const handleUploadImage = async (images) => {
-    if (images[0] == null) {
-      toast.warn("Please add thumbnail");
-      return;
+  const compressImage = async (imageFile) => {
+    const options = {
+      maxSizeMB: 1, // Set max size to 1MB
+      maxWidthOrHeight: 1024, // Resize the image to 1024px
+      useWebWorker: true, // Speed up the compression
+    };
+    try {
+      console.log("before :: ", imageFile.size)
+      const comprFile =  await imageCompression(imageFile, options);
+      console.log("after :: ", comprFile.size)
+      return comprFile
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      return imageFile; // If compression fails, return original image
     }
+  };
+
+  const handleUploadImage = async () => {
+
+    const idx = previewImage.map((url, index) =>{
+      if(url)
+       return url.includes("firebasestorage.googleapis.com") ? -1 : index
+    }
+    );
+    console.log(idx)
     setImgUploading(true);
     const urls = await Promise.all(
-      images.map(async (image) => {
-        if (image) {
-          const url = await uploadImage(image);
-          return url;
+      idx.map(async (index) => {
+        if (index !== -1 && imageFiles[index]) {
+          try {
+            // Compress image before uploading
+          const compressedFile = await compressImage(imageFiles[index]);
+            const url = await uploadImage(compressedFile);
+            return url;
+          } catch (error) {
+            toast.error(`Failed to upload image: ${error.message}`);
+            return null;
+          }
         }
         return null;
       })
     );
-    const validUrls = urls.filter((url) => url); // filter out any null values
-    setImageUrl(validUrls); // set filtered URLs
+  
+    const finalUrl = idx
+      .map((i, index) => (i === -1 ? previewImage[index] : urls[index]))
+      .filter(Boolean); // filter out any null or undefined values
+  
     setImgUploading(false);
-    return validUrls; // Return the URLs directly from the function
+    return finalUrl; // Return the URLs directly from the function
   };
-
+  
   const handleAddProduct = async () => {
     const { name, desc, price, stock } = product;
-
-    if (!name || !desc || !price || !stock || imageFiles.length === 0) {
+  
+    // Validate all required fields
+    if (!name || !desc || !price || !stock || imageFiles.every((file) => file === null)) {
       toast.warn("Please fill all the fields and upload images.");
       return;
     }
-
+  
     try {
-      dispatch({ type: PRODUCT_ACTIONS.SET_LOADING });
-
-      // Upload images if imageUrl is empty
-      let finalImageUrl = imageUrl;
-
-      if (imageUrl.length === 0) {
-        finalImageUrl = await handleUploadImage(imageFiles);
-      }
-
-      if (finalImageUrl.length === 0) {
-        toast.error("Image upload failed. Please try again.");
+      dispatch({ type: PRODUCT_ACTIONS.SET_LOADING, payload : true});
+  
+      const finalImageUrl = await handleUploadImage();
+  
+      // Validate thumbnail
+      if (!finalImageUrl[0]) {
+        toast.warn("Thumbnail is required.");
         return;
       }
-
+  
       const newProduct = {
         ...product,
         thumbnail: finalImageUrl[0], // Set the first image as the thumbnail
         images: finalImageUrl,
         flashSale,
       };
-
-      let productId 
-
-      if(productID){
-        await updateProductInFirestore(productID, newProduct)
-        toast.success("Updated Sucessfully")
-        navigate(-1)
-        return
+  
+      // Check if we are updating an existing product or adding a new one
+      if (productID) {
+        await updateProductInFirestore(productID, newProduct);
+        toast.success("Updated Successfully");
+        navigate(-1);
+        return;
       }
-
-      productId = await addProduct(newProduct);
-      newProduct.pId = productId;
-
+  
+      const productId = await addProduct(newProduct);
+      newProduct.pId = productId; // Add the product ID to the new product object
+  
       toast.success("Product added successfully!");
       dispatch({ type: PRODUCT_ACTIONS.ADD_PRODUCTS, payload: newProduct });
-
+  
+      // Clear all form states and reset after successful product addition
       localStorage.removeItem("add-product-details");
       setProduct(initialState);
       setFlashSale({ active: false, discount: 0, endDate: null });
       setImageFiles([null, null, null, null, null]);
-      setImageUrl([]);
+      setPreviewImage([null, null, null, null, null]);
       setSize(allSizes);
     } catch (error) {
+      console.log(error)
       toast.error(`Failed to add product: ${error.message}`);
       dispatch({ type: PRODUCT_ACTIONS.SET_ERROR, payload: error.message });
     }
   };
+  
 
   const handleSaveDraft = async () => {
     try {
@@ -257,7 +306,7 @@ const AddProduct = () => {
     setProduct(initialState);
     setFlashSale({ active: false, discount: 0, endDate: null });
     setImageFiles([null, null, null, null, null]);
-    setImageUrl([]);
+    setPreviewImage([]);
     setSize(allSizes);
   };
 
@@ -448,7 +497,7 @@ const AddProduct = () => {
             <div className="bg-gray-300 w-full h-56 rounded-md flex justify-center items-center">
               <UploadImageComponent
                 divStyle="w-full h-56 rounded-md border border-dashed border-secondary flex justify-center items-center"
-                image={imageFiles[0]}
+                image={previewImage[0]}
                 setImage={(files) => handleSetImage(files)}
                 index={0}
               />
@@ -459,7 +508,7 @@ const AddProduct = () => {
                 <UploadImageComponent
                   key={index}
                   divStyle="bg-gray-300 w-20 h-20 rounded-md border border-dashed border-secondary flex justify-center items-center"
-                  image={image}
+                  image={previewImage[1+index]}
                   setImage={(files) => handleSetImage(files)}
                   index={1 + index}
                 />
@@ -547,6 +596,7 @@ function UploadImageComponent({ image, setImage, divStyle, index }) {
     );
 
     console.log(files);
+
     // If files are valid, update the state
     if (newValidFiles.length > 0) {
       setImage({ files: newValidFiles, index });
@@ -568,7 +618,7 @@ function UploadImageComponent({ image, setImage, divStyle, index }) {
       <div className={`${divStyle}`} onClick={handleBtnClick}>
         {image ? (
           <img
-            src={URL.createObjectURL(image)}
+            src={image}
             className="w-full object-contain h-full"
             alt="Uploaded"
           />
@@ -581,3 +631,6 @@ function UploadImageComponent({ image, setImage, divStyle, index }) {
 }
 
 // export default UploadImageComponent
+
+
+// URL.createObjectURL(image)

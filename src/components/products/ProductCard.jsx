@@ -71,6 +71,7 @@ function handleProductClick(){
           className="object-contain w-48 h-48 lg:w-64  lg:h-72 rounded-md transition-all duration-300"
           src={product.thumbnail}
           alt={product.name}
+          loading="lazy"
         />
 
         {/* Add to Cart button on hover */}

@@ -62,6 +62,7 @@ export const handleRazorPayPayment = (amount, userData) => {
                 const verificationResult = await paymentVerificationResponse.json();
                 if (verificationResult.success) {
                     const paymentInfo = {
+                        method : "Razorpay",
                         razorpay_order_id,
                         razorpay_payment_id,
                         status: "paid",
@@ -93,3 +94,26 @@ export const handleRazorPayPayment = (amount, userData) => {
         rzp1.open();
     });
 };
+
+
+const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+  
+ export const displayRazorpay = async () => {
+    const isScriptLoaded = await loadRazorpayScript();
+    if (!isScriptLoaded) {
+      alert("Failed to load Razorpay SDK. Please check your internet connection.");
+      return;
+    }
+}
