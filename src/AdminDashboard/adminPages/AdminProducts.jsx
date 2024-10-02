@@ -17,7 +17,7 @@ const AdminProducts = () => {
 
   // console.log(products);
   return (
-    <div className={`flex flex-col  justify-center relative`}>
+    <div  className={`flex flex-col  justify-center relative`}>
       {/* headers */}
       <div className=" dark:text-slate-300 flex justify-between items-center border-b border-slate-700 pb-3 px-40 mt-12">
         <p className="text-2xl  font-bold tracking-wider">All Products</p>
@@ -33,10 +33,9 @@ const AdminProducts = () => {
       {/* list of products */}
       <div className="flex-1 w-full h-full">
 
-
-        <div className="mx-20 mt-10 bg-gray-200 dark:bg-gray-800 px-20 py-5">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <div  style={{ height: 'calc(100vh - 200px)' }} className="mx-20 mt-10 bg-gray-200 dark:bg-gray-800 px-20 py-5 overflow-y-scroll scroll-smooth rounded-md">
+          <div className=" shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 relative">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">

@@ -252,9 +252,9 @@ const CheckoutPage = () => {
 
 
   return (
-    <div className="min-h-screen px-32 py-10 flex flex-col gap-4">
+    <div className="min-h-screen px-6 py-4 lg:px-32 lg:py-10 flex flex-col gap-4">
       <BreadCrumb />
-      <div className="flex gap-56">
+      <div className="flex flex-col lg:gap-56 gap-8 lg:flex-row">
         <AddressForm
           userAddress={userAddress}
           setUserAddress={setUserAddress}
@@ -285,11 +285,11 @@ const OrderSummary = ({
   orderLoading,
   handlePlaceOrder,
 }) => (
-  <div className="mt-20 w-96">
+  <div className="lg:mt-20 lg:w-96">
     <div className="flex flex-col gap-6">
       {cart.map(({ pId, thumbnail, name, price, quantity }) => (
         <div key={pId} className="flex justify-between items-center">
-          <div className="flex gap-4 items-center">
+          <div className="flex md:gap-4 gap-2.5 items-center">
             <img className="w-16" src={thumbnail} alt={name} />
             <p>{name}</p>
           </div>
@@ -304,7 +304,7 @@ const OrderSummary = ({
     />
     <button
       onClick={handlePlaceOrder}
-      className={`bg-secondary px-5 py-2 rounded w-full text-white mt-5 ${
+      className={`bg-secondary px-2 lg:px-5 py-2 rounded w-full text-white mt-5 ${
         orderLoading ? "opacity-50 cursor-not-allowed" : ""
       }`}
       disabled={orderLoading}

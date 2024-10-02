@@ -18,7 +18,7 @@ const AddressForm= forwardRef(({userAddress}, ref) => {
     }, [userAddress])
 
     return (
-        <div className="w-1/3">
+        <div className="lg:w-1/3">
           <p className="text-xl font-semibold mb-5">Billing Details</p>
           <form>
             <div className="flex flex-col gap-4 w-full">
@@ -171,25 +171,6 @@ export default AddressForm;
 
 
 
-// Checkbox Component
-function Checkbox({ label, name, register, required, error }) {
-    return (
-      <div className="flex items-center gap-2">
-        <input 
-          type="checkbox" 
-          {...register(name, { required })} 
-          className="form-checkbox"
-        />
-        <label className="text-base text-gray-400">
-          {label}
-          <span className="text-secondary">{required && "*"}</span>
-        </label>
-        {error && <span className="text-red-500 text-sm">This field is required</span>}
-      </div>
-    );
-  }
-
-
   function CustomCheckbox({ label, name, register, required, error, watch }) {
     const isChecked = watch(name)
     return (
@@ -207,7 +188,7 @@ function Checkbox({ label, name, register, required, error }) {
             ${error ? 'border-red-500' : 'border-gray-400'} 
             ${isChecked && "bg-secondary border-secondary text-white" }
           `}>{isChecked && <DoneIcon fontSize="small"/>}</span>
-          <span className="ml-2 text-base text-gray-400">{label}{required && "*"}</span>
+          <span className="ml-2 md:text-base text-sm text-gray-400">{label}{required && "*"}</span>
         </label>
         {error && <span className="text-red-500 text-sm">This field is required</span>}
       </div>
