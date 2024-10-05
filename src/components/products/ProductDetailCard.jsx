@@ -146,7 +146,7 @@ const ProductDetailCard = ({divStyle = ""}) => {
               | {ProductDetail?.stock > 0 ? "In Stock" : "Out of stock"}
             </p>
           </div>
-          <p className="text-base font-semibold tracking-wide mb-2">$192.00</p>
+          <p className="text-base font-semibold tracking-wide mb-2">₹{ProductDetail?.price}</p>
           <p className="text-sm lg:w-64 max-w-96">{ProductDetail?.desc}</p>
           <span className="w-full h-1 border-t-2 border-gray-400 my-2"></span>
           <span className="flex items-center">

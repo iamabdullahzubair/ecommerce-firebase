@@ -35,7 +35,7 @@ const CartList = ({ cart: cartItem, onUpdateQuantity }) => {
             <p className="text-sm text-wrap">{cartItem.name}</p>
           </span>
         </div>
-        <p className="w-1/6">${cartItem.price}</p>
+        <p className="w-1/6">₹{cartItem.price}</p>
         <span className="w-1/6">
           <input
             className="focus:outline-none w-14 border border-gray-400 px-2 py-1 font-semibold rounded dark:text-gray-700"
@@ -44,7 +44,7 @@ const CartList = ({ cart: cartItem, onUpdateQuantity }) => {
             value={quantity}
           />
         </span>
-        <p className="w-1/6">${Number(cartItem.price) * Number(quantity)}</p>
+        <p className="w-1/6">₹{Number(cartItem.price) * Number(quantity)}</p>
         <button
         className="w-1/6 text-start"
         onClick={handleRemoveCart}

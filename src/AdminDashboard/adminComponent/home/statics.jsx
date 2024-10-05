@@ -9,7 +9,7 @@ export const fetchMonthlySalesData = async () => {
 
     ordersSnapshot.forEach((doc) => {
       const order = doc.data();
-      console.log(order);
+      // console.log(order);
       const orderDate = order.createdAt.toDate();
       const month = orderDate.toLocaleString("default", { month: "long" }); // Get full month name
       const year = orderDate.getFullYear();
@@ -28,7 +28,7 @@ export const fetchMonthlySalesData = async () => {
       salesData[key].total += Number(order.totalAmount); // Assuming 'total' is the sales amount
     });
 
-    console.log(salesData);
+    // console.log(salesData);
     // Convert the salesData object into an array
     const chartData = Object.keys(salesData).map((key) => ({
       name: key,
@@ -63,8 +63,8 @@ export const fetchCurrentMonthSalesData = async () => {
       const saleMonthKey = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format: YYYY-MM
 
       // console.log(saleData)
-      console.log(saleMonthKey);
-      console.log(currentMonthKey);
+      // console.log(saleMonthKey);
+      // console.log(currentMonthKey);
       // Check if the sale is from the current month
       if (saleMonthKey === currentMonthKey) {
         if (saleData.paymentOption === "cashondelivery") {

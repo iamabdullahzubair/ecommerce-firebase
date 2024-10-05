@@ -22,7 +22,7 @@ const LineChartComponent = ({salesData, loading}) => {
               <Tooltip />
               <Line type="monotone" dataKey="stats.total" name="Total" stroke="#82ca9d" activeDot={{ r: 8 }}/>
               <Line type="monotone" dataKey="stats.cash" name='Cash' stroke="#8884d8" />
-              <Line type="monotone" dataKey="stats.online" name='Online Payment' stroke="#8884d8" />
+              <Line type="monotone" dataKey="stats.online" name='Online Payment' stroke="#DB4444" />
             </LineChart>
           </ResponsiveContainer>
     </>

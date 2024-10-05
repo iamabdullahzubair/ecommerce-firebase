@@ -128,15 +128,15 @@ const CartPage = () => {
       <p className="text-lg font-semibold tracking-wide mb-6">Cart Total</p>
       <span className="flex justify-between items-center border-b border-gray-400 mb-2 py-2">
         <p>Subtotal</p>
-        <p>${totalPrice}</p>
+        <p>₹{totalPrice}</p>
       </span>
       <span className="flex justify-between items-center border-b border-gray-400 mb-2 py-2">
         <p>Shipping</p>
-        <p>$0</p>
+        <p>₹0</p>
       </span>
       <span className="flex justify-between items-center mb-2 py-2">
         <p>Total : </p>
-        <p>${totalPrice}</p>
+        <p>₹{totalPrice}</p>
       </span>
       <span className="flex items-center justify-center mt-6">
         <button

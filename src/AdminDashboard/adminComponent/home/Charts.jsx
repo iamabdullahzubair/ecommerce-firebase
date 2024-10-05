@@ -13,7 +13,7 @@ const Charts = () => {
     try {
       const { success, data, message } = await fetchMonthlySalesData();
       if (success) {
-        console.log(data);
+        // console.log(data);
         setSalesData(data);
       }
     } catch (error) {

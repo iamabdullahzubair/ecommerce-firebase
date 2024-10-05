@@ -293,7 +293,7 @@ const OrderSummary = ({
             <img className="w-16" src={thumbnail} alt={name} />
             <p>{name}</p>
           </div>
-          <p>${price}</p>
+          <p>₹{price}</p>
         </div>
       ))}
     </div>
@@ -319,7 +319,7 @@ const SummaryDetails = ({ totalPrice }) => (
   <div>
     <div className="flex justify-between items-center border-b border-gray-400 pb-2 mt-8">
       <p>Subtotal</p>
-      <p>${totalPrice}</p>
+      <p>₹{totalPrice}</p>
     </div>
     <div className="flex justify-between items-center border-b border-gray-400 pb-2 mt-4">
       <p>Shipping</p>
@@ -327,7 +327,7 @@ const SummaryDetails = ({ totalPrice }) => (
     </div>
     <div className="flex justify-between items-center mt-4">
       <p>Total</p>
-      <p>${totalPrice}</p>
+      <p>₹{totalPrice}</p>
     </div>
   </div>
 );

@@ -146,6 +146,32 @@ export async function getUserOrders() {
     return { success: false, error: error.message };
   }
 }
+export async function getAllOrders() {
+  const user = auth.currentUser; // Directly get the current user
+
+  // Check if user is authenticated
+  if (!user) {
+    console.log("User is not authenticated, redirect to login");
+    return { success: false, message: "User not authenticated" };
+  }
+
+  try {
+    // Instantiate the service with the user's ID
+    const newOrderService = new OrderService(user.uid);
+    
+    // Place the order and get response
+    const {success, data} = await newOrderService.getAllOrders();
+
+    if (success) {
+      return { success: true, data };
+    } else {
+      return { success: false, message: "Failed to get orders" };
+    }
+  } catch (error) {
+    console.error("Error on getting all order :: ", error.message);
+    return { success: false, error: error.message };
+  }
+}
 
 
 const razorpay_api = import.meta.env.VITE_RAZORPAY_API

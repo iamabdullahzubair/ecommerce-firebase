@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingOverlay = ({ isLoading }) => {
+const LoadingOverlay = ({ isLoading , text}) => {
   if (!isLoading) return null;
 
   return (
@@ -9,7 +9,7 @@ const LoadingOverlay = ({ isLoading }) => {
       <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
 
       {/* Optional: Loading Text */}
-      <p className="text-white text-lg font-medium mt-4">Processing your order...</p>
+      <p className="text-white text-lg font-medium mt-4">{text ? text : "Processing your order..."}</p>
 
       <style>
         {`

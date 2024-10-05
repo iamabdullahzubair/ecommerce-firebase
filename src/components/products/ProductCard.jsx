@@ -97,7 +97,7 @@ function handleProductClick(){
         </p>
         <div className="flex items-center text-sm my-1">
           <p className="mr-3 text-red-400 dark:text-white font-semibold">
-            ${product.price}
+          ₹{product.price}
           </p>
           {Array(product.rating)
             .fill()
