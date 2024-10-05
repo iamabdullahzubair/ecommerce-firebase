@@ -92,9 +92,9 @@ const DownloadButton = ({ orderDetails }) => {
 
   return (
     <div>
-      <button onClick={generatePDF} className='bg-blue-500 text-white px-4 py-2 rounded flex items-center'>
-        <p className="mr-2">Download Bill</p>
-        <FileDownloadIcon />
+      <button onClick={generatePDF} >
+        {/* <p className="mr-2">Download Bill</p> */}
+        <FileDownloadIcon fontSize='small' />
       </button>
     </div>
   );
